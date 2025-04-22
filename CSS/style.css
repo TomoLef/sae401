@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Boldonse&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=Noto+Sans+Indic+Siyaq+Numbers&display=swap');
+
+h2 {
+    font-family: "Host Grotesk", system-ui;
+    font-weight: bold;
+    font-size: 24px;
+}
+h3 {
+    font-family: "Host Grotesk", system-ui;
+    font-weight: bold;
+    font-size: 20px;
+}
+p {
+    font-family: "Noto Sans Indic Siyaq Number", system-ui;
+    font-size: 16px;
+}
+section {
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+.header {
+    background-color: #00AEEF;
+    height: 85px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    display: flex;
+}
+.logo {
+    display: flex;
+    align-items: center;
+}
+.logo img {
+    height: 70px;
+    margin-right: 30px;
+}
+.brand-name {
+    font-family: "Boldonse", system-ui;
+    font-size: 24px;
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+    color: white;
+}
+.search-bar {
+    width: 90%;
+}
+.nav-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.nav-icons a {
+    display: block;
+    color: black;
+    margin: 0 15px;
+    text-align: center;
+}
+.nav-icons a h3 {
+    margin: 0;
+}
+/* div produit */
+.div-product {
+    display: flex;
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    width: 30%;
+    margin-top: 20px;
+}
+.img-velo {
+    width: 50%;
+    margin: 2%;
+    margin-right: 5%;
+}
+.product-details {
+    align-content: center;
+}
+.product-info {
+    display: flex;
+}
+.product-info h3 {
+    margin-right: 10%;
+}
+/* map */
+.map {
+    width: 785px;
+    height: 575px;
+    width: 100%;
+    margin: 0 auto; 
+}
+/* div marque */
+.brand-ligne {
+    display: ruby;
+    margin-left: 2%;
+}
+.div-brand {
+    margin: 2%;
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    width: 20%;
+}
+.img-brand {
+    width: 100%;
+}
+.div-brand h3 {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Dropdown Button */
+.dropdown-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+    position: absolute !important;
+}
+.dropdown-content li:not(:first-child) {
+    font-size: 16px;
+    color: #26a69a;
+    display: block;
+    line-height: 22px;
+    text-align: center;
+    padding: 14px 16px;
+}
+.dropdown-content li>p {
+    margin: 0;
+}
+.dropdown-content li>a {
+    padding: 0;
+}

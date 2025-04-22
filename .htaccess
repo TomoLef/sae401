@@ -1,0 +1,21 @@
+# Activer le moteur de réécriture
+RewriteEngine On
+
+# Rediriger toutes les requêtes sauf les fichiers et dossiers existants
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Page d'accueil
+RewriteRule ^$ index.php [L]
+
+# Page listant tous les produits
+RewriteRule ^produits$ page/allProducts.php [QSA,L]
+
+# Page d'un produit spécifique (avec ID)
+RewriteRule ^produit/([0-9]+)$ page/produit.php?id=$1 [QSA,L]
+
+# Page listant les produits filtrés par prix, année, catégorie et marque
+RewriteRule ^produits/filtre$ page/allProducts.php [QSA,L]
+
+# Gestion des erreurs
+ErrorDocument 404 /page/404.php
