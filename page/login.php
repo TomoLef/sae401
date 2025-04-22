@@ -1,9 +1,9 @@
 <?php
 /**
- * Handles the addition of stock via a POST request.
+ * Handles user login via a POST request.
  * 
  * This script validates the input fields, constructs the API URL, 
- * and sends a POST request to the API to add stock to the store.
+ * and sends a GET request to the API to authenticate the user.
  * 
  * @package SAE401
  * @version 1.0
@@ -17,54 +17,84 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     /**
      * Validate required fields and process the form submission.
      */
-    if (isset($_POST['product'], $_POST['quantity'])) {
-        // Retrieve form data
-        $product = urlencode($_POST['product']);
-        $quantity = urlencode($_POST['quantity']);
-        $store = $_SESSION["compte"]["store"]["store_id"];
+    if (isset($_POST['email']) && isset($_POST['password'])) {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
         /**
-         * Construct the API URL for adding stock.
+         * Construct the API URL for user authentication.
          * 
          * @var string $url The API endpoint with query parameters.
          */
-        $url = "https://saevelo.alwaysdata.net/api_request/api.php?"
-            . "&store=$store&product=$product&quantity=$quantity";
+        $url = "https://saevelo.alwaysdata.net/api_request/api.php?action=employe&email=$email&password=$password";
+        $data = array('email' => $email, 'password' => $password);
+        $options = array(
+            'http' => array(
+                'header'  => "Content-Type: application/json\r\n",
+                'method'  => 'GET',
+                'content' => json_encode($data),
+            ),
+        );
 
         /**
-         * Initialize the cURL request to send data to the API.
+         * Set cookies for the authenticated user.
          * 
-         * @var resource $ch The cURL handle.
+         * @param array $employee The employee data retrieved from the API.
+         * @return void
          */
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Api: e8f1997c763"
-        ]);
+        function cookie($employee) {
+            $cookie_lifetime = 30 * 24 * 60 * 60; // 30 days
+            setcookie(
+                "employee_id", 
+                $employee['employee_id'], 
+                time() + $cookie_lifetime, 
+                "/", 
+                "", 
+                false, 
+                true
+            );
+            setcookie(
+                "employee_role", 
+                $employee['employee_role'], 
+                time() + $cookie_lifetime, 
+                "/", 
+                "", 
+                false, 
+                true
+            );
+        }
 
         /**
-         * Execute the cURL request and retrieve the response.
+         * Execute the API request and retrieve the response.
          * 
          * @var string $response The API response.
-         * @var int $httpCode The HTTP status code of the response.
+         * @var array|null $employee The decoded employee data from the API response.
          */
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        $context  = stream_context_create($options);
+        $response = file_get_contents($url, false, $context);
+        $employee = json_decode($response, true);
 
         /**
          * Handle the API response.
          * 
-         * - If the request is successful (HTTP 200), redirect to the homepage.
-         * - Otherwise, display an error message and redirect to the homepage.
+         * - If the response is null, display an error message and redirect to the homepage.
+         * - If the response contains employee data, set session and cookies, then redirect to the homepage.
+         * - Otherwise, display an error message for incorrect credentials.
          */
-        if ($httpCode === 200) {
+        if ($employee === NULL) {
+            $_SESSION['erreur'] = "Error connecting to the API.";
+            header("Location: /index.php");
+            exit();
+        }
+
+        if (!empty($employee)) {
+            $_SESSION['compte'] = $employee;
             $_SESSION['erreur'] = null;
+            cookie($employee);
             header("Location: /index.php");
             exit();
         } else {
-            $_SESSION['erreur'] = "Error during stock addition.";
+            $_SESSION['erreur'] = "Incorrect email or password.";
             header("Location: /index.php");
             exit();
         }
